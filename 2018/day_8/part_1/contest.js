@@ -18,7 +18,7 @@ function process(arr) {
         node.metadata = this.arr.splice(0,  metadataCount);
         this.sum += node.metadata.reduce((m1, m2) => m1 + m2);
         return node;
-    }
+    };
     rec();
     return this.sum;
 };
