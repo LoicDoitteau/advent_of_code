@@ -17,12 +17,11 @@ function getTree(arr) {
         }
         node.metadata = this.arr.splice(0,  metadataCount);
         return node;
-    }
+    };
     return(rec());
 };
-
 function getNodeValue(node) {
     if(node == undefined) return 0;
     if(node.children.length == 0) return node.metadata.reduce((m1, m2) => m1 + m2);
     return node.metadata.reduce((acc, m) =>  acc + getNodeValue(node.children[m-1]), 0);
-}
+};
