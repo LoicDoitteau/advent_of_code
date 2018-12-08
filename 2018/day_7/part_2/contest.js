@@ -11,7 +11,7 @@ fs.readFile("./2018/day_7/part_2/input.txt", 'utf8', (err, input) => {
     }, {});
     var toDo = Object.keys(graph).filter(k => graph[k].prev.length == 0).sort();
     var r = -1;
-    while(toDo.length != []) {
+    while(toDo.length != 0) {
         pending = toDo.filter(k1 => graph[k1].prev.every(k2 => graph[k2].done)).slice(0, 5);
         r++;
         pending.forEach(current => {

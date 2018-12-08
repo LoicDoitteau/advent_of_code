@@ -9,9 +9,9 @@ fs.readFile("./2018/day_7/part_1/input.txt", 'utf8', (err, input) => {
         acc[next].prev.push(cur);
         return acc;
     }, {});
-    var toDo = Object.keys(graph).filter(k => graph[k].prev.length == 0);
+    var toDo = Object.keys(graph).filter(k => graph[k].prev.length == 0).sort();
     var r = "";
-    while(toDo.length != []) {
+    while(toDo.length != 0) {
         current = toDo.find(k1 => graph[k1].prev.every(k2 => graph[k2].done));
         r += current;
         graph[current].done = true;
