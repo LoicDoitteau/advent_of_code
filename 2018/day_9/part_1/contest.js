@@ -8,7 +8,7 @@ fs.readFile("./2018/day_9/part_1/input.txt", 'utf8', (err, input) => {
     var current = first;
     var turn = 0;
     var scores = {};
-    while(turn <= last) {
+    while(turn < last) {
         turn++;
         if(turn % 23 == 0) {
             if(scores[turn % players] == undefined) scores[turn % players] = 0;
