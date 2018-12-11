@@ -1,6 +1,6 @@
 fs = require("fs");
 
-fs.readFile("./2018/day_10/part_1/input.txt", 'utf8', (err, input) => {
+fs.readFile("./2018/day_10/part_1&2/input.txt", 'utf8', (err, input) => {
     var p = /position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>/;
     var points = input.split('\n').map(s => {
         var [, px, py, vx, vy] = s.match(p).map(Number);
