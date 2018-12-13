@@ -1,6 +1,6 @@
 fs = require("fs");
 
-fs.readFile("./2018/day_13/part_1/input.txt", 'utf8', (err, input) => {
+fs.readFile("./2018/day_13/part_2/input.txt", 'utf8', (err, input) => {
     var cartInputs = ["^", ">", "v", "<"];
     var directions = {
         "^" : {
@@ -74,8 +74,8 @@ fs.readFile("./2018/day_13/part_1/input.txt", 'utf8', (err, input) => {
             return acc2;
         }, acc1);
     }, {track : [], carts : []});
-    var flag = true;
-    while(flag) {
+    var z = 0;
+    while(true) {
         map.carts.sort((cart1, cart2) => {
             if(cart1.pos.y < cart2.pos.y) return -1;
             if(cart1.pos.y > cart2.pos.y) return 1;
@@ -85,6 +85,7 @@ fs.readFile("./2018/day_13/part_1/input.txt", 'utf8', (err, input) => {
         });
         for(var i = 0; i < map.carts.length; i++) {
             var cart = map.carts[i];
+            if(cart.dead) continue;
             var pos = cart.pos;
             pos.x += cart.next.dx;
             pos.y += cart.next.dy;
@@ -95,13 +96,17 @@ fs.readFile("./2018/day_13/part_1/input.txt", 'utf8', (err, input) => {
             } else {
                 cart.next = directions[cart.next.path[map.track[pos.y][pos.x]]].next;
             }
-            if(map.carts.some((cart2, j) => {
-                return i != j && pos.x == cart2.pos.x && pos.y == cart2.pos.y;
-            })) {
-                console.log(cart.pos);
-                flag = false;
-                break;
-            }
+            map.carts.forEach((cart2, j) => {
+                if(i != j && pos.x == cart2.pos.x && pos.y == cart2.pos.y) {
+                    cart.dead = true;
+                    cart2.dead = true;
+                }
+            });
+        }
+        map.carts = map.carts.filter(cart => !cart.dead);
+        if(map.carts.length == 1) {
+            console.log(map.carts[0].pos);
+            break;
         }
     }
 });
