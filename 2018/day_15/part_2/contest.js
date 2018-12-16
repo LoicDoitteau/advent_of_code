@@ -20,8 +20,8 @@ fs.readFile("./2018/day_15/part_2/input.txt", 'utf8', (err, input) => {
         do {
             setPriorityOrder(map.units);
             map.units.forEach(unit => {
-                if(!map.units.some(u => u.c != unit.c)) flag2 = false;
                 if(unit.hp > 0) {
+                    if(!map.units.some(u => u.c != unit.c)) flag2 = false;
                     var targets = getTargetsInRange(unit, map);
                     if(targets.length == 0) {
                         var pos = getOpenSquares(unit, map);
