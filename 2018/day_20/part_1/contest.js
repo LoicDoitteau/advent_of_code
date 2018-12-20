@@ -2,14 +2,11 @@ fs = require("fs");
 
 fs.readFile("./2018/day_20/part_1/input.txt", 'utf8', (err, input) => {
     input = input.substring(1, input.length - 1);
-    var pos = {x : 0, y : 0};
-    var output = [];
-    console.log(process(input, pos, output).length);
+    console.log(process(input).length);
 });
 
-function process(path, startPos, output) {
+function process(path) {
     var i = path.indexOf('(');
-    var pos = startPos;
     for(i = 0; i < path.length; i++) {
         if(path[i] == '(') {
             var j, k;
@@ -27,11 +24,11 @@ function process(path, startPos, output) {
                 if(path[n] == '(') k++;
                 else if(path[n] == ')') k--;
                 else if(path[n] == '|' && k == 1) {
-                    subPaths.push(process(path.substring(m, n), pos, output));
+                    subPaths.push(process(path.substring(m, n)));
                     m = n + 1;
                 }
             }
-            subPaths.push(process(path.substring(m, j), pos, output));
+            subPaths.push(process(path.substring(m, j)));
             if(!subPaths.some(p => p.length == 0)) {
                 subPath = subPaths.reduce((p1, p2) => p1.length > p2.length ? p1 : p2);
             }
