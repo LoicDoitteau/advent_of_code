@@ -6,7 +6,6 @@ fs.readFile("./2018/day_22/part_1/input.txt", 'utf8', (err, input) => {
     var riskLevel = 0;
     for(var i = 0; i <= x; i++) {
         for(var j = 0; j <= y; j++) {
-            // if(i == x -1) console.log(i, j, getRegionType({x : i, y : j}, cave));
             riskLevel += getRegionType({x : i, y : j}, cave);
         }
     }
