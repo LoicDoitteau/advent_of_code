@@ -13,5 +13,5 @@ function getFuel_part1(mass){
 function getFuel_part2(mass){
     let fuel = Math.floor(mass / 3) - 2;
     if(fuel <= 0) return 0;
-    return fuel + getFuel(fuel);
+    return fuel + getFuel_part2(fuel);
 }
