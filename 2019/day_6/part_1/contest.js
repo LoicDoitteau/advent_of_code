@@ -13,7 +13,7 @@ fs.readFile("./2019/day_6/input.txt", 'utf8', (err, data) => {
         if (planet.orbit == undefined) planet.length = 0;
         else planet.length = 1 + rec(planet.orbit);
         return planet.length;
-    }
+    };
 
     const res = Object.keys(planets).reduce((acc, k) => acc + rec(planets[k]), 0);
 
