@@ -32,7 +32,7 @@ fs.readFile("./2019/day_5/input.txt", 'utf8', (err, data) => {
         },
         "04" : () => {
             const value1 = intcode[pointer + 1];
-            output = intcode[value1]
+            output = intcode[value1];
             pointer += 2;
         }
     };
