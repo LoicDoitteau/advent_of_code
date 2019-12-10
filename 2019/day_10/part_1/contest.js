@@ -1,7 +1,6 @@
 fs = require("fs");
 fs.readFile("./2019/day_10/input.txt", 'utf8', (err, data) => {
     const startTime = new Date().getTime();
-    const epsilon = 0.001;
     let res = null;
     const DEBUG = false;
 
@@ -22,24 +21,11 @@ fs.readFile("./2019/day_10/input.txt", 'utf8', (err, data) => {
                 const asteroid3 = asteroids[k];
                 if(((asteroid1.x <= asteroid2.x && asteroid2.x <= asteroid3.x) || (asteroid1.x >= asteroid2.x && asteroid2.x >= asteroid3.x)) // 2 between 1 & 3
                  && ((asteroid1.y <= asteroid2.y && asteroid2.y <= asteroid3.y) || (asteroid1.y >= asteroid2.y && asteroid2.y >= asteroid3.y))) {
-                    let area = a = asteroid1.x * (asteroid2.y - asteroid3.y) + asteroid2.x * (asteroid3.y - asteroid1.y) + asteroid3.x * (asteroid1.y - asteroid2.y);
+                    let area = asteroid1.x * (asteroid2.y - asteroid3.y) + asteroid2.x * (asteroid3.y - asteroid1.y) + asteroid3.x * (asteroid1.y - asteroid2.y);
                     if(area == 0) { // line
                         asteroid1.blocked[asteroid3.id] = true;
                         asteroid3.blocked[asteroid1.id] = true;
                         if(DEBUG) console.log(`Line : ${asteroid2.id} blocks ${asteroid1.id} and ${asteroid3.id}`);
-                    }
-                    else { // other
-                        let d1 = {x : asteroid1.x - asteroid2.x, y : asteroid1.y - asteroid2.y};
-                        let d2 = {x : asteroid2.x - asteroid3.x, y : asteroid2.y - asteroid3.y};
-                        if((Math.abs(d2.x) + Math.abs(d2.y)) < (Math.abs(d1.x) + Math.abs(d1.y))) [d1, d2] = [d2, d1];
-
-                        const dx = d2.x / d1.x;
-                        const dy = d2.y / d1.y;
-                        if(Number.isInteger(dx) && Number.isInteger(dy) && dx == dy) {
-                            asteroid1.blocked[asteroid3.id] = true;
-                            asteroid3.blocked[asteroid1.id] = true;
-                            if(DEBUG) console.log(`Other : ${asteroid2.id} blocks ${asteroid1.id} and ${asteroid3.id}`);
-                        }
                     }
                 }
             }
