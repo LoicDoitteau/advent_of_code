@@ -2,29 +2,6 @@ fs = require("fs");
 fs.readFile("./2019/day_17/input.txt", 'utf8', (err, data) => {
     const startTime = new Date().getTime();
     const states = {RUNNING : 0, HALTED : 1, STOPPED : 2};
-    const dir = {
-        94 : {
-            MOVE : {dx : 0, dy : -1},
-            LEFT : 60,
-            RIGHT : 62
-        },
-        62 : {
-            MOVE : {dx : 1, dy : 0},
-            LEFT : 94,
-            RIGHT : 118
-        },
-        118 : {
-            MOVE : {dx : 0, dy : 1},
-            LEFT : 62,
-            RIGHT : 60
-        },
-        60 : {
-            MOVE : {dx : -1, dy : 0},
-            LEFT : 118,
-            RIGHT : 94
-        }
-    }
-    const ascii = {SCAFFOLD : 35, EMPTY : 46, NEW_LINE : 10, UP : 94, RIGHT : 62, DOWN : 118, LEFT : 60};
     const DEBUG = true;
     let res = null;
 
@@ -129,57 +106,6 @@ fs.readFile("./2019/day_17/input.txt", 'utf8', (err, data) => {
             }
         }
     }
-
-    const getMap = () => {
-        const grid = {};
-        const bot = {};
-        let x = 0, y = 0;
-        const prog = new IntProgram();
-        let string = "";
-
-        while(true) {
-            const state = prog.process();
-            if(state.state == states.STOPPED) {
-                if(DEBUG) console.log(string);
-                return {grid, bot};
-            }
-            string += String.fromCharCode(state.output);
-            if(state.output == ascii.NEW_LINE) {
-                y++;
-                x = 0;
-            }
-            else {
-                if(!grid[y]) grid[y] = {};
-                if(state.output == ascii.UP || state.output == ascii.RIGHT || state.output == ascii.DOWN || state.output == ascii.LEFT) {
-                    grid[y][x] = ascii.SCAFFOLD;
-                    bot.x = x;
-                    bot.y = y;
-                    bot.dir = dir[state.output]; 
-                }
-                else grid[y][x] = state.output;
-                x++;
-            }
-        }
-    }
-
-    const getIntersections = map => {
-        const intersections = [];
-        const grid = map.grid;
-        
-        for (const y in grid) {
-            const col = grid[y];
-            for (const x in col) {
-                const pos = {x : Number(x), y : Number(y)};
-                const cell = col[x];
-                if(grid[pos.y-1] && grid[pos.y+1] && cell == ascii.SCAFFOLD && grid[pos.y-1][pos.x] == ascii.SCAFFOLD && grid[pos.y+1][pos.x] == ascii.SCAFFOLD && grid[pos.y][pos.x-1] == ascii.SCAFFOLD && grid[pos.y][pos.x+1] == ascii.SCAFFOLD) {
-                    intersections.push(pos);
-                }
-            }
-        }
-        return intersections;
-    }
-
-    const getAlignmentParameter = pos => Math.abs(pos.x) * Math.abs(pos.y);
 
     // L10 L10 R6 L10 L10 R6 R12 L12 L12 R12 L12 L12 L6 L10 R12 R12 R12 L12 L12 L6 L10 R12 R12 R12 L12 L12 L6 L10 R12 R12 L10 L10 R6
     // A : L10 L10 R6
