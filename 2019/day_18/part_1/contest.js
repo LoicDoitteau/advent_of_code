@@ -4,13 +4,13 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
     const DEBUG = false;
     let res = null;
 
-    const tiles = {EMPTY : ".", WALL : "#", PLAYER : "@"};
+    const tiles = {EMPTY : ".", WALL : "#", ENTRANCE : "@"};
     const isEmpty = cell => cell == tiles.EMPTY;
     const isWall = cell => cell == tiles.WALL;
-    const isPlayer = cell => cell == tiles.PLAYER;
+    const isEntrance = cell => cell == tiles.ENTRANCE;
     const isDoor = cell => cell >= "A" && cell <= "Z";
     const iskey = cell => cell >= "a" && cell <= "z";
-    const isAccessible = cell => isEmpty(cell) || isPlayer(cell) || iskey(cell);
+    const isAccessible = cell => isEmpty(cell) || isEntrance(cell) || iskey(cell);
 
     const getNeighbors = pos => [{x : pos.x, y : pos.y - 1}, {x: pos.x, y : pos.y + 1}, {x : pos.x - 1, y : pos.y}, {x : pos.x + 1, y : pos.y}];
 
@@ -21,12 +21,12 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
 
     const showGrid = grid => console.log(grid.reduce((acc, row) => acc + row.join('') + "\r\n", ""));
 
-    const getPlayerPos = grid => {
+    const getEntrancePos = grid => {
         for (let y = 0; y < grid.length; y++) {
             const col = grid[y];
             for (let x = 0; x < col.length; x++) {
                 const cell = col[x];
-                if(isPlayer(cell)) return {x, y};
+                if(isEntrance(cell)) return {x, y};
             }
         }
         return null;
@@ -45,13 +45,13 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
     }
 
     const getAccessibleKeys = grid => {
-        const playerPos = getPlayerPos(grid);
+        const entrancePos = getEntrancePos(grid);
         const visited = {};
-        const toDo = [playerPos];
+        const toDo = [entrancePos];
         const keys = {};
 
-        visited[playerPos.y] = {};
-        visited[playerPos.y][playerPos.x] = 0;
+        visited[entrancePos.y] = {};
+        visited[entrancePos.y][entrancePos.x] = 0;
 
         while(toDo.length > 0) {
             const current = toDo.shift();
@@ -80,19 +80,19 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
 
             memo[memoKey] = Math.min(...Object.keys(keys).map(k => {
                 const newGrid = grid.map(row => row.map(cell => cell));
-                const playerPos = getPlayerPos(newGrid);
+                const playerPos = getEntrancePos(newGrid);
                 const doorPos = getDoorPos(newGrid, k);
                 const keyPos = keys[k].pos;
                 const keyDist = keys[k].dist;
                 newGrid[playerPos.y][playerPos.x] = tiles.EMPTY;
-                newGrid[keyPos.y][keyPos.x] = tiles.PLAYER;
+                newGrid[keyPos.y][keyPos.x] = tiles.ENTRANCE;
                 if(doorPos) newGrid[doorPos.y][doorPos.x] = tiles.EMPTY;
                 return keyDist + rec(newGrid);
             }));
 
             return memo[memoKey];
         }
-        return rec(grid, 0, 0);
+        return rec(grid);
     }
 
     res = getMinStepsToGetKeys(getGrid(data));
