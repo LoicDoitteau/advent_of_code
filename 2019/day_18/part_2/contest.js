@@ -22,7 +22,7 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
     const showGrid = grid => console.log(grid.reduce((acc, row) => acc + row.join('') + "\r\n", ""));
 
     const splitEntrance = grid => {
-        const entrances = getEntrancesPos;
+        const entrances = getEntrancesPos(grid);
         if(entrances.length = 1) {
             const entrance = entrances[0];
             grid[entrance.y - 1][entrance.x - 1] = tiles.ENTRANCE;
@@ -35,6 +35,7 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
             grid[entrance.y + 1][entrance.x] = tiles.WALL;
             grid[entrance.y + 1][entrance.x + 1] = tiles.ENTRANCE;
         }
+        return grid;
     }
 
     const getEntrancesPos = grid => {
@@ -61,62 +62,69 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
         return null;
     }
 
-    const getAccessibleKeysByEntrance = grid => {
-        const entrancesPos = getEntrancesPos(grid)[0];
-        const keysByEntrance = {};
-        
-        for (const entrancePos of entrancesPos) {
-            const keys = {};
-            const toDo = [entrancePos];
-            const visited = {};
-            visited[entrancePos.y] = {};
-            visited[entrancePos.y][entrancePos.x] = 0;
-    
-            while(toDo.length > 0) {
-                const current = toDo.shift();
-    
-                for(const neighbor of getNeighbors(current)) {
-                    if(!visited[neighbor.y]) visited[neighbor.y] = {}
-                    if(grid[neighbor.y] && isAccessible(grid[neighbor.y][neighbor.x]) && visited[neighbor.y][neighbor.x] == undefined) {
-                        visited[neighbor.y][neighbor.x] = visited[current.y][current.x] + 1;
-                        if(iskey(grid[neighbor.y][neighbor.x])) keys[grid[neighbor.y][neighbor.x]] = {pos : neighbor, dist : visited[neighbor.y][neighbor.x]};
-                        else toDo.push(neighbor);
-                    }
+    const getAccessibleKeys = (grid, fromPos) => {
+        const keys = {};
+        const toDo = [fromPos];
+        const visited = {};
+        visited[fromPos.y] = {};
+        visited[fromPos.y][fromPos.x] = 0;
+
+        while(toDo.length > 0) {
+            const current = toDo.shift();
+
+            for(const neighbor of getNeighbors(current)) {
+                if(!visited[neighbor.y]) visited[neighbor.y] = {}
+                if(grid[neighbor.y] && isAccessible(grid[neighbor.y][neighbor.x]) && visited[neighbor.y][neighbor.x] == undefined) {
+                    visited[neighbor.y][neighbor.x] = visited[current.y][current.x] + 1;
+                    if(iskey(grid[neighbor.y][neighbor.x])) keys[grid[neighbor.y][neighbor.x]] = {pos : neighbor, dist : visited[neighbor.y][neighbor.x]};
+                    else toDo.push(neighbor);
                 }
             }
+        }
+
+        return keys;
+    }
+
+    const getAccessibleKeysByEntrance = grid => {
+        const entrancesPos = getEntrancesPos(grid);
+        const keysByEntrance = [];
+        
+        for (const entrancePos of entrancesPos) {
+            const keys = getAccessibleKeys(grid, entrancePos);
             keysByEntrance.push({entrancePos, keys});
         }
         return keysByEntrance;
     }
 
-    // TODO
     const getMinStepsToGetKeys = grid => {
         let memo = {};
         const rec = grid => {
-            const keys = getAccessibleKeysByEntrance(grid)[0];
+            const keysByEntrance = getAccessibleKeysByEntrance(grid);
             if(DEBUG) showGrid();
-            if(Object.keys(keys).length == 0) return 0;
+            if(keysByEntrance.every(obj => Object.keys(obj.keys).length == 0)) return 0;
             const memoKey = hash(grid);
             if(memo[memoKey]) return memo[memoKey];
-
-            memo[memoKey] = Math.min(...Object.keys(keys).map(k => {
+            
+            const distances = keysByEntrance.reduce((acc, obj) => acc.concat(Object.keys(obj.keys).map(k => {
                 const newGrid = grid.map(row => row.map(cell => cell));
-                const entrancePos = getEntrancesPos(newGrid)[0];
+                const entrancePos = obj.entrancePos;
                 const doorPos = getDoorPos(newGrid, k);
-                const keyPos = keys[k].pos;
-                const keyDist = keys[k].dist;
+                const keyPos = obj.keys[k].pos;
+                const keyDist = obj.keys[k].dist;
                 newGrid[entrancePos.y][entrancePos.x] = tiles.EMPTY;
                 newGrid[keyPos.y][keyPos.x] = tiles.ENTRANCE;
                 if(doorPos) newGrid[doorPos.y][doorPos.x] = tiles.EMPTY;
                 return keyDist + rec(newGrid);
-            }));
+            })), []);
+
+            memo[memoKey] = Math.min(...distances);
 
             return memo[memoKey];
         }
-        return rec(grid, 0, 0);
+        return rec(grid);
     }
 
-    res = getMinStepsToGetKeys(getGrid(data));
+    res = getMinStepsToGetKeys(splitEntrance(getGrid(data)));
     console.log(res);
     const elapsedTime = new Date().getTime() - startTime;
     console.log(`Elapsed : ${elapsedTime} ms`);
