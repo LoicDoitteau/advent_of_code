@@ -17,7 +17,11 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
     const getGrid = data => data.split("\r\n").map(row => row.split(""));
 
     // TODO : Opti
-    const hash = grid => grid.reduce((acc, row) => acc + row.join(""), "");
+    const hash = grid => {
+        const entrancePos = getEntrancePos(grid);
+        const keys = getKeys(grid);
+        return `${entrancePos.x},${entrancePos.y}${keys.join('')}`;
+    }
 
     const showGrid = grid => console.log(grid.reduce((acc, row) => acc + row.join('') + "\r\n", ""));
 
@@ -42,6 +46,18 @@ fs.readFile("./2019/day_18/input.txt", 'utf8', (err, data) => {
             }
         }
         return null;
+    }
+
+    const getKeys = grid => {
+        const keys = [];
+        for (let y = 0; y < grid.length; y++) {
+            const col = grid[y];
+            for (let x = 0; x < col.length; x++) {
+                const cell = col[x];
+                if(iskey(cell)) keys.push(cell);
+            }
+        }
+        return keys;
     }
 
     const getAccessibleKeys = grid => {
