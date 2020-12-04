@@ -1,11 +1,6 @@
 fs = require("fs");
 fs.readFile("./2020/day_4/input.txt", 'utf8', (err, input) => {
     
-    const tiles = {
-        open: '.',
-        tree: '#'
-    }
-
     const fieldsRequirement = {
         byr: true,
         iyr: true,
