@@ -20,7 +20,7 @@ fs.readFile("./2020/day_11/input.txt", 'utf8', (err, input) => {
     const evolve = grid => grid.map((row, y) => row.map((cell, x) => {
         const occupied = countAdjOccupied(grid, x, y);
         if (cell == cells.empty && !occupied) return cells.occupied;
-        if (cell == cells.occupied && occupied >= 4) return cells.empty;
+        if (cell == cells.occupied && occupied >= 5) return cells.empty;
         return cell;
     }));
 
@@ -30,14 +30,27 @@ fs.readFile("./2020/day_11/input.txt", 'utf8', (err, input) => {
         const width = gridWidth(grid);
 
         let count = 0;
-        for (let dx = -1; dx <= 1; dx++) {
-            const newX = x + dx;
-            if (newX < 0 || newX >= width) continue;
-            for (let dy = -1; dy <= 1; dy++) {
-                const newY = y + dy;
-                if (dx == 0 && dy == 0) continue;
-                if (newY < 0 || newY >= height) continue;
+        const dirs = [
+            { dx: -1, dy: 0 },
+            { dx: -1, dy: -1 },
+            { dx: -1, dy: 1 },
+            { dx: 1, dy: 0 },
+            { dx: 1, dy: -1 },
+            { dx: 1, dy: 1 },
+            { dx: 0, dy: -1 },
+            { dx: 0, dy: 1 },
+        ];
+
+        for (const dir of dirs) {
+            let stop = false;
+            let newX = x + dir.dx;
+            let newY = y + dir.dy;
+            while (newX >= 0 && newX < width && newY >= 0 && newY < height) {
                 if (grid[newY][newX] == cells.occupied) count++;
+                if (grid[newY][newX] != cells.floor) stop = true;
+                if (stop) break;
+                newX += dir.dx;
+                newY += dir.dy;
             }
         }
         return count;
