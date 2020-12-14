@@ -34,7 +34,7 @@ fs.readFile("./2020/day_14/input.txt", 'utf8', (err, input) => {
                     return acc;
                 }, []);
         } else {
-            const { address, value } = /mem\[(?<address>\d+)\] = (?<value>\d+)/.exec(instruction).groups;
+            const { address, value } = valueRegex.exec(instruction).groups;
             memory[address] = applyMask(currentMask, BigInt(value));
         }
     }

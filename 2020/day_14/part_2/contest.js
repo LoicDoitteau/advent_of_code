@@ -42,7 +42,7 @@ fs.readFile("./2020/day_14/input.txt", 'utf8', (err, input) => {
         if (maskRegex.test(instruction)) {
             currentMask = maskRegex.exec(instruction).groups.mask;
         } else {
-            const { address, value } = /mem\[(?<address>\d+)\] = (?<value>\d+)/.exec(instruction).groups;
+            const { address, value } = valueRegex.exec(instruction).groups;
             applyMask(currentMask, BigInt(address)).forEach(newAddress => memory[newAddress] = BigInt(value));
         }
     }
