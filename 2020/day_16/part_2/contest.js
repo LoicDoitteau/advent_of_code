@@ -11,7 +11,7 @@ fs.readFile("./2020/day_16/input.txt", 'utf8', (err, input) => {
         const { range1Min, range1Max, range2Min, range2Max } = ranges;
         const arr1 = Array.from({ length: 1 + range1Max - range1Min }, (_, i) => range1Min + i);
         const arr2 = Array.from({ length: 1 + range2Max - range2Min }, (_, i) => range2Min + i);
-        const generator = function*() { yield* arr1; yield* arr2 };
+        const generator = function*() { yield* arr1; yield* arr2; };
         acc[rule] = new Set(generator());
         return acc;
     }, {});
@@ -26,7 +26,7 @@ fs.readFile("./2020/day_16/input.txt", 'utf8', (err, input) => {
             .map(Number));
 
     const allRulesNumbers = Object.keys(rules).reduce((acc, key) => {
-        const generator = function*() { yield* acc, yield* rules[key] };
+        const generator = function*() { yield* acc; yield* rules[key]; };
         return new Set(generator());
     }, new Set());
 
