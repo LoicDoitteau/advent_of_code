@@ -52,7 +52,7 @@ fs.readFile("./2020/day_17/input.txt", 'utf8', (err, input) => {
             for (const cube of cubes) {
                 const key = hash(cube);
                 const activeNeighborsCount = activeNeighbors(cube).length;
-                if (   (activeCubes.has(key) && activeNeighborsCount >= 2 & activeNeighborsCount <= 3)
+                if (   (activeCubes.has(key) && activeNeighborsCount >= 2 && activeNeighborsCount <= 3)
                     || (!activeCubes.has(key) && activeNeighborsCount == 3)) {
                     newActiveCubes.set(key, cube);
                 }
