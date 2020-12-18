@@ -23,7 +23,6 @@ fs.readFile("./2020/day_18/input.txt", 'utf8', (err, input) => {
             let char = trimed[cursor];
             if (char == operators.ADD || char == operators.MUL) {
                 operation.operator = char;
-                side = 'left';
                 operation.left = parseOperation(trimed.substring(0, cursor));
                 break;
             }
