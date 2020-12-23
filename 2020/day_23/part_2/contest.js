@@ -39,10 +39,6 @@ fs.readFile("./2020/day_23/input.txt", 'utf8', (err, input) => {
             destCup = cupsByLabel.get(destCupLabel);
         }
 
-        if (destCup == undefined)
-        {
-            let fff = 0;
-        }
         thirdPick.next = destCup.next;
         thirdPick.next.prev = thirdPick;
         firstPick.prev = destCup;
@@ -51,10 +47,7 @@ fs.readFile("./2020/day_23/input.txt", 'utf8', (err, input) => {
         currentCup = currentCup.next;
     }
 
-    while (currentCup.label != TARGET_LABEL) {
-        currentCup = currentCup.next;
-    }
-
+    currentCup = cupsByLabel.get(TARGET_LABEL);
     const response = currentCup.next.label * currentCup.next.next.label
     console.log(response);
     console.timeEnd();
